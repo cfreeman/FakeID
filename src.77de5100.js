@@ -405,7 +405,8 @@ navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
     eBackCanvas.width = video.videoWidth;
     eBackCanvas.height = video.videoHeight;
     iVideoWidth = video.videoWidth;
-    iVideoHeight = video.videoHeight; //video.play();
+    iVideoHeight = video.videoHeight;
+    console.log(video); //video.play();
 
     render(true, true);
   };
@@ -438,7 +439,18 @@ function render(firstPass, hasVideo) {
   } else if (hasVideo && !eVideo.paused) {
     ctxBack.drawImage(document.getElementById('player'), 0, 0, iVideoWidth, iVideoHeight);
     var aPixels = ctxBack.getImageData(0, 0, iPhotoWidth, iPhotoHeight);
-    ctx.putImageData(aPixels, 20, 50);
+    var aBPixels = ctxBack.getImageData(0, 0, iPhotoWidth, iPhotoHeight);
+
+    for (var row = 0; row < aPixels.height; row++) {
+      for (var col = 0; col < aPixels.width; col++) {
+        aBPixels.data[(row * aPixels.width + (aPixels.width - col)) * 4 + 0] = aPixels.data[(row * aPixels.width + col) * 4 + 0];
+        aBPixels.data[(row * aPixels.width + (aPixels.width - col)) * 4 + 1] = aPixels.data[(row * aPixels.width + col) * 4 + 1];
+        aBPixels.data[(row * aPixels.width + (aPixels.width - col)) * 4 + 2] = aPixels.data[(row * aPixels.width + col) * 4 + 2];
+        aBPixels.data[(row * aPixels.width + (aPixels.width - col)) * 4 + 3] = aPixels.data[(row * aPixels.width + col) * 4 + 3];
+      }
+    }
+
+    ctx.putImageData(aBPixels, 20, 50);
   }
 
   if (firstPass) {
@@ -610,7 +622,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55582" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58061" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
